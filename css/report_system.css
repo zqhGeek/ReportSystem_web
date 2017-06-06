@@ -1,0 +1,9 @@
+#print_file{
+    background: #3C8DBC
+}
+#print_file:hover{
+    background: #367FA9
+}
+.navbar-nav >li >a >.fa{
+    width: 20px;
+}

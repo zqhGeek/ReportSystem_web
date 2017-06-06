@@ -23,7 +23,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           apply the skin class to the body tag so the changes take effect.
     -->
     <link rel="stylesheet" href="../css/skin-blue.min.css">
-
+    <link rel="stylesheet" href="../css/report_system.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]
@@ -60,9 +60,9 @@ desired effect
         <!-- Logo -->
         <a href="index2.html" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>A</b>LT</span>
+            <span class="logo-mini"><b>点</b>餐</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>Admin</b>LTE</span>
+            <span class="logo-lg"><b>点餐系统</b></span>
         </a>
 
         <!-- Header Navbar -->
@@ -71,23 +71,31 @@ desired effect
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                 <span class="sr-only">Toggle navigation</span>
             </a>
-            <!-- Navbar Right Menu -->
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Link</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <div class="navbar-custom-menu">
+                <!-- Navbar Right Menu -->
+                <ul class="nav navbar-nav ">
+                    <li >
+                        <a id="print_file" href="#">
+                            <i class="fa fa-print"></i>
+                            <span>打印</span>
+                            <span class="sr-only">(打印)</span>
+                        </a>
+                    </li>
+                    <!--<li><a href="#">Link</a></li>-->
+                    <!--<li class="dropdown">-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>-->
+                    <!--<ul class="dropdown-menu" role="menu">-->
+                    <!--<li><a href="#">Action</a></li>-->
+                    <!--<li><a href="#">Another action</a></li>-->
+                    <!--<li><a href="#">Something else here</a></li>-->
+                    <!--<li class="divider"></li>-->
+                    <!--<li><a href="#">Separated link</a></li>-->
+                    <!--<li class="divider"></li>-->
+                    <!--<li><a href="#">One more separated link</a></li>-->
+                    <!--</ul>-->
+                    <!--</li>-->
+                </ul>
+            </div>
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
@@ -102,9 +110,8 @@ desired effect
                     <img src="../img/user2-160x160.jpg" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
-                    <p>Alexander Pierce</p>
+                    <p>Alexander </p>
                     <!-- Status -->
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                 </div>
             </div>
 
@@ -121,7 +128,7 @@ desired effect
             <!-- /.search form -->
 
             <!-- Sidebar Menu -->
-            <ul class="sidebar-menu">
+            <ul class="sidebar-menu tree" data-widget="tree">
                 <li class="header">HEADER</li>
                 <!-- Optionally, you can add icons to the links -->
                 <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
@@ -259,7 +266,7 @@ desired effect
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 2.2.3 -->
-<script src="../js/jquery-3.2.1.slim.min.js"></script>
+<script src="../js/jquery-3.2.1.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="../js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
