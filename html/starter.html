@@ -239,7 +239,7 @@ desired effect
                 <h3 class="control-sidebar-heading">Recent Activity</h3>
                 <ul class="control-sidebar-menu">
                     <li>
-                        <a href="javascript:;">
+                        <a href="javascript:">
                             <i class="menu-icon fa fa-birthday-cake bg-red"></i>
 
                             <div class="menu-info">
@@ -255,7 +255,7 @@ desired effect
                 <h3 class="control-sidebar-heading">Tasks Progress</h3>
                 <ul class="control-sidebar-menu">
                     <li>
-                        <a href="javascript:;">
+                        <a href="javascript:">
                             <h4 class="control-sidebar-subheading">
                                 Custom Template Design
                                 <span class="pull-right-container">
@@ -341,10 +341,38 @@ desired effect
                 "search": "搜索"
             }
         });
+        var json_data;
+        var name_array=[];
+        var service_array;
+        $.getJSON("../data/data.txt", function (json) {
+            json_data = json;
+            $.each(json, function (i, field) {
+                var a = typeof(field);
+                var time;
+                if (a === "object") {
+                    console.log(i);
+                    console.log(field);
+                    $.each(field, function(k1, v1) {
+                        var name_model = {number: "", name: ""};
+                        name_model.name = v1.name;
+                        name_model.number = v1.number;
+                        name_array.push(name_model);
+                        name_array.every(function (data) {
+                            return data.number ===v1.number;
+                        })
+                        console.log(k1);
+                        console.log(v1);
+                    });
 
-        $.getJSON("data.txt", function (result) {
-            $.each(result, function (i, field) {
-                $("div").append(field + " ");
+                }else if (i==="time"){
+                    time = i;
+                    console.log(i);
+                    console.log(field);
+                }else {
+                    console.log(i);
+                    console.log(field);
+                }
+
             });
         });
     });
