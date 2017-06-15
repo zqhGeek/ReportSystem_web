@@ -59,7 +59,7 @@ desired effect
     <header class="main-header">
 
         <!-- Logo -->
-        <a href="index2.html" class="logo">
+        <a href="starter.html" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>点</b>餐</span>
             <!-- logo for regular state and mobile devices -->
@@ -162,9 +162,9 @@ desired effect
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
-
                         <!-- /.box-body -->
-                        <div class="box-body">
+                        <div class="box-body" style="min-height: 200px">
+
                             <table id="example1" class="table table-bordered table-hover dataTable" width="100%"
                                    role="grid" aria-describedby="example2_info">
                                 <thead>
@@ -180,6 +180,9 @@ desired effect
 
                                 </tbody>
                             </table>
+                            <div class="overlay">
+                                <i class="fa fa-refresh fa-spin"></i>
+                            </div>
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -318,8 +321,121 @@ desired effect
 <!-- 引入 ECharts 文件 -->
 <script src="../js/echarts.js"></script>
 <script>
+    let time_array = [];
+    let json_data;
     $(function () {
+//        initDataBaseTable();
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = echarts.init(document.getElementById('chart_main'));
+        initChart(myChart);
+
+
+        $.getJSON("../data/data.txt", function (json) {
+            json_data = json;
+            $.each(json, function (i, field) {
+                time_array.push(field.time);
+            });
+            time_array.sort(function (a, b) {
+                return Number(b) - Number(a);
+            });
+            console.log(time_array);
+            getLastServiceData(myChart);
+        });
+
+
+//        analysisData();
+    });
+    function getLastServiceData(myChart) {
+        let last_time = time_array[0];
+        let service_array = [];
+        $.each(json_data, function (i, field) {
+            if (typeof(field) === "object" && field.time === last_time) {
+                initDataBaseTable(field.service);
+                $(".overlay").remove();
+                $.each(field.service, function (k1, v1) {
+                    let service_model = {number: "", name: "", service: 0};
+                    service_model.name = v1.name;
+                    service_model.number = v1.number;
+                    service_model.service = 1;
+                    let model = service_array.find(function (currentValue, index, arr) {
+                        return currentValue.number === v1.number;
+                    });
+                    if (model === undefined) {
+                        service_array.push(service_model);
+                    } else {
+                        model.service = model.service + 1;
+                    }
+                });
+            }else {
+                console.log(field.time);
+            }
+        });
+        console.log(service_array);
+        let x_data = [];
+        let y_data = [];
+        for (let i = 0; i < service_array.length; i++) {
+            x_data[i] = service_array[i].name;
+            y_data[i] = service_array[i].service;
+        }
+        console.log(x_data);
+        console.log(y_data);
+        setChart(myChart, x_data, y_data);
+    }
+    function creatTimeHtml() {
+        let html = '<div class="dropdown" style="float: left;">' +
+            '<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
+            'Dropdown' +
+            '<span class="caret"></span>' +
+            '</button>' +
+            '<ul class="dropdown-menu" aria-labelledby="dropdownMenu">' +
+            '<li><a href="#">Action</a></li>' +
+            '<li><a href="#">Another action</a></li>' +
+            '<li><a href="#">Something else here</a></li></ul>';
+
+    }
+    function analysisData() {
+        $.getJSON("../data/data.txt", function (json) {
+            $.each(json, function (i, field) {
+                let service_model = {time: "", name: "", service: 0};
+                let a = typeof(field.service);
+                time_array.push(field.time);
+                if (a === "object") {
+                    console.log(field.service);
+                    $.each(field.service, function (k1, v1) {
+                        let service_model = {number: "", name: "", service: 0};
+                        service_model.name = v1.name;
+                        service_model.number = v1.number;
+                        service_model.service = 1;
+                        let model = service_array.find(function (currentValue, index, arr) {
+                            return currentValue.number === v1.number;
+                        });
+                        if (model === undefined) {
+                            service_array.push(service_model);
+                        } else {
+                            model.service = model.service + 1;
+                        }
+                    });
+
+                } else {
+                    console.log(field.service);
+                }
+            });
+            console.log(service_array);
+            let x_data = [];
+            let y_data = [];
+            for (let i = 0; i < service_array.length; i++) {
+                x_data[i] = service_array[i].name;
+                y_data[i] = service_array[i].service;
+            }
+            console.log(x_data);
+            console.log(y_data);
+            setChart(myChart, x_data, y_data);
+        });
+    }
+
+    function initDataBaseTable(data,time_html) {
         $("#example1").DataTable({
+            "dom": '<"time"><"print">frtip',
             "paging": false,
             "deferRender": true,//延迟渲染，可以提高初始化的速度
             "lengthChange": false,
@@ -327,8 +443,9 @@ desired effect
             "ordering": true,
             "info": false,
             "autoWidth": true,
-            "processing": true,
-            "ajax": "../data/data.txt",
+            "processing": false,
+            "data":data,
+//            "ajax": "../data/data.txt",
             "columns": [
                 {"data": "number"},
                 {"data": "name"},
@@ -341,67 +458,62 @@ desired effect
                 "search": "搜索"
             }
         });
-        var json_data;
-        var name_array=[];
-        var service_array;
-        $.getJSON("../data/data.txt", function (json) {
-            json_data = json;
-            $.each(json, function (i, field) {
-                var a = typeof(field);
-                var time;
-                if (a === "object") {
-                    console.log(i);
-                    console.log(field);
-                    $.each(field, function(k1, v1) {
-                        var name_model = {number: "", name: ""};
-                        name_model.name = v1.name;
-                        name_model.number = v1.number;
-                        name_array.push(name_model);
-                        name_array.every(function (data) {
-                            return data.number ===v1.number;
-                        })
-                        console.log(k1);
-                        console.log(v1);
-                    });
+        $("div.time").html(time_html);
+        $("div.print").html('<div style="width: 50px ;float: right; margin-left: 12px"><button type="button" class="btn btn-block btn-primary btn-sm" id="btn_print" onclick="">打印</button></div>');
+    }
 
-                }else if (i==="time"){
-                    time = i;
-                    console.log(i);
-                    console.log(field);
-                }else {
-                    console.log(i);
-                    console.log(field);
-                }
+    function print_data() {
 
-            });
-        });
-    });
+    }
+    function setChart(myChart, x_data, y_data) {
+        // 指定图表的配置项和数据
+        let option = {
+            title: {
+                text: '员工绩效统计图'
+            },
+            tooltip: {},
+            legend: {
+                data: ['服务次数']
+            },
+            xAxis: {
+                data: x_data
+            },
+            yAxis: {},
+            series: [{
+                name: '服务次数',
+                type: 'bar',
+                data: y_data
+            }]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    function initChart(myChart) {
 
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('chart_main'));
+        // 指定图表的配置项和数据
+        let option = {
+            title: {
+                text: '员工绩效统计图'
+            },
+            tooltip: {},
+            legend: {
+                data: []
+            },
+            xAxis: {
+                data: []
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: []
+            }]
+        };
 
-    // 指定图表的配置项和数据
-    var option = {
-        title: {
-            text: '员工绩效统计图'
-        },
-        tooltip: {},
-        legend: {
-            data: ['工作量']
-        },
-        xAxis: {
-            data: []
-        },
-        yAxis: {},
-        series: [{
-            name: '销量',
-            type: 'bar',
-            data: []
-        }]
-    };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
 
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
