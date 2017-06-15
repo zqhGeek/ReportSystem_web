@@ -165,8 +165,8 @@ desired effect
                         <!-- /.box-body -->
                         <div class="box-body" style="min-height: 200px">
 
-                            <table id="example1" class="table table-bordered table-hover dataTable" width="100%"
-                                   role="grid" aria-describedby="example2_info">
+                            <table id="table_service" class="table table-bordered table-hover dataTable" width="100%"
+                                   role="grid" aria-describedby="table_service_info">
                                 <thead>
                                 <tr>
                                     <th>员工编号</th>
@@ -320,6 +320,11 @@ desired effect
 <script src="../js/dataTables.bootstrap.min.js"></script>
 <!-- 引入 ECharts 文件 -->
 <script src="../js/echarts.js"></script>
+<script src="../js/date.prototype.format.js"></script>
+<script src="../js/tableExport.js"></script>
+<script src="../js/jquery.base64.js"></script>
+<script src="../js/FileSaver.js"></script>
+<script src="../js/report_system.js"></script>
 <script>
     let time_array = [];
     let json_data;
@@ -350,23 +355,23 @@ desired effect
         let service_array = [];
         $.each(json_data, function (i, field) {
             if (typeof(field) === "object" && field.time === last_time) {
-                initDataBaseTable(field.service);
+                initDataBaseTable(field.order,creatTimeHtml(time_array));
                 $(".overlay").remove();
-                $.each(field.service, function (k1, v1) {
-                    let service_model = {number: "", name: "", service: 0};
+                $.each(field.order, function (k1, v1) {
+                    let service_model = {number: "", name: "", order: 0};
                     service_model.name = v1.name;
                     service_model.number = v1.number;
-                    service_model.service = 1;
+                    service_model.order = 1;
                     let model = service_array.find(function (currentValue, index, arr) {
                         return currentValue.number === v1.number;
                     });
                     if (model === undefined) {
                         service_array.push(service_model);
                     } else {
-                        model.service = model.service + 1;
+                        model.order = model.order + 1;
                     }
                 });
-            }else {
+            } else {
                 console.log(field.time);
             }
         });
@@ -375,66 +380,29 @@ desired effect
         let y_data = [];
         for (let i = 0; i < service_array.length; i++) {
             x_data[i] = service_array[i].name;
-            y_data[i] = service_array[i].service;
+            y_data[i] = service_array[i].order;
         }
         console.log(x_data);
         console.log(y_data);
         setChart(myChart, x_data, y_data);
     }
-    function creatTimeHtml() {
+    function creatTimeHtml(time_array) {
         let html = '<div class="dropdown" style="float: left;">' +
             '<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
-            'Dropdown' +
+            new Date(Number(time_array[0])*1000).format("yyyy-MM-dd EEE") +
             '<span class="caret"></span>' +
             '</button>' +
-            '<ul class="dropdown-menu" aria-labelledby="dropdownMenu">' +
-            '<li><a href="#">Action</a></li>' +
-            '<li><a href="#">Another action</a></li>' +
-            '<li><a href="#">Something else here</a></li></ul>';
+            '<ul class="dropdown-menu" aria-labelledby="dropdownMenu">';
+        for (let i = 0; i < time_array.length; i++) {
+            html = html + '<li><a class="date" id='+time_array[i]+' href="#">' + new Date(Number(time_array[i])*1000).format("yyyy-MM-dd EEE") + '</a></li>';
+        }
+        html = html + '</ul>';
+        return html;
 
     }
-    function analysisData() {
-        $.getJSON("../data/data.txt", function (json) {
-            $.each(json, function (i, field) {
-                let service_model = {time: "", name: "", service: 0};
-                let a = typeof(field.service);
-                time_array.push(field.time);
-                if (a === "object") {
-                    console.log(field.service);
-                    $.each(field.service, function (k1, v1) {
-                        let service_model = {number: "", name: "", service: 0};
-                        service_model.name = v1.name;
-                        service_model.number = v1.number;
-                        service_model.service = 1;
-                        let model = service_array.find(function (currentValue, index, arr) {
-                            return currentValue.number === v1.number;
-                        });
-                        if (model === undefined) {
-                            service_array.push(service_model);
-                        } else {
-                            model.service = model.service + 1;
-                        }
-                    });
 
-                } else {
-                    console.log(field.service);
-                }
-            });
-            console.log(service_array);
-            let x_data = [];
-            let y_data = [];
-            for (let i = 0; i < service_array.length; i++) {
-                x_data[i] = service_array[i].name;
-                y_data[i] = service_array[i].service;
-            }
-            console.log(x_data);
-            console.log(y_data);
-            setChart(myChart, x_data, y_data);
-        });
-    }
-
-    function initDataBaseTable(data,time_html) {
-        $("#example1").DataTable({
+    function initDataBaseTable(data, time_html) {
+        $("#table_service").DataTable({
             "dom": '<"time"><"print">frtip',
             "paging": false,
             "deferRender": true,//延迟渲染，可以提高初始化的速度
@@ -444,13 +412,13 @@ desired effect
             "info": false,
             "autoWidth": true,
             "processing": false,
-            "data":data,
+            "data": data,
 //            "ajax": "../data/data.txt",
             "columns": [
                 {"data": "number"},
                 {"data": "name"},
                 {"data": "table_number"},
-                {"data": "service"},
+                {"data": "order"},
                 {"data": "time"}
             ],
             "language": {
@@ -459,11 +427,29 @@ desired effect
             }
         });
         $("div.time").html(time_html);
-        $("div.print").html('<div style="width: 50px ;float: right; margin-left: 12px"><button type="button" class="btn btn-block btn-primary btn-sm" id="btn_print" onclick="">打印</button></div>');
+        $("div.print").html('<div style="width: 50px ;float: right; margin-left: 12px"><button type="button" class="btn btn-block btn-primary btn-sm" id="btn_print" onclick="print_data()">打印</button></div>');
     }
 
     function print_data() {
-
+        let time = $("a.date").attr("id");
+        let content="";
+        $.each(json_data, function (i, field) {
+            if(field.time === time) {
+                $.each(field.order,function (i, data) {
+                    content =content+ data.number + "," + data.name + "," + data.table_number + "," + data.order + "," + data.time + "\n";
+                    console.debug(content);
+                })
+            }
+        });
+        //Excel打开后中文乱码添加如下字符串解决
+        var exportContent = "\uFEFF";
+        var blob = new Blob([exportContent+"员工编号,姓名,服务餐桌,服务类型,服务时长(min)\n"+content],{type: "text/plain;charset=utf-8"});
+        saveAs(blob, "hello world.csv");
+//        $("#table_service").table2excel({
+//            exclude: "",
+//            name: "WorksheetName",
+//            filename: "SomeFile" //do not include extension
+//        });
     }
     function setChart(myChart, x_data, y_data) {
         // 指定图表的配置项和数据

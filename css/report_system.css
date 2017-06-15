@@ -10,3 +10,6 @@
 .box-body table{
     min-height: 300px;
 }
+.btn .caret {
+    margin-left: 8px;
+}
