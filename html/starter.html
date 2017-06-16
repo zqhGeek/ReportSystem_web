@@ -3,6 +3,7 @@
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
+<!--suppress ALL -->
 <html>
 <head>
     <meta charset="utf-8">
@@ -193,7 +194,7 @@ desired effect
             <!-- BAR CHART -->
             <div class="box box-success">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Bar Chart</h3>
+                    <h3 class="box-title" id="chart_title">Bar Chart</h3>
 
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
@@ -326,15 +327,17 @@ desired effect
 <script src="../js/FileSaver.js"></script>
 <script src="../js/report_system.js"></script>
 <script>
-    let time_array = [];
-    let json_data;
+    //    let time_array = [];
+    //    let json_data;
+    let myChart;
     $(function () {
+        let time_array = [];
+        let json_data;
 //        initDataBaseTable();
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('chart_main'));
-        initChart(myChart);
-
-
+        myChart = echarts.init(document.getElementById('chart_main'));
+        initChart();
+        myChart.showLoading();
         $.getJSON("../data/data.txt", function (json) {
             json_data = json;
             $.each(json, function (i, field) {
@@ -343,40 +346,66 @@ desired effect
             time_array.sort(function (a, b) {
                 return Number(b) - Number(a);
             });
+            window.sessionStorage.setItem("JSON_DATA", JSON.stringify(json_data));
+            window.sessionStorage.setItem("TIME_ARRAY", JSON.stringify(time_array));
             console.log(time_array);
-            getLastServiceData(myChart);
+            initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
+            setTableAndChartData(time_array[0]);
         });
-
-
-//        analysisData();
     });
-    function getLastServiceData(myChart) {
-        let last_time = time_array[0];
-        let service_array = [];
+
+    /**
+     * 更新table数据
+     */
+    function updateDetailTableData(dataArr) { //dataArr是表格数据数组，和初始化配置需一样的结构
+        var table = $('#table_service').dataTable();
+        var oSettings = table.fnSettings(); //这里获取表格的配置
+        table.fnClearTable(this); //动态刷新关键部分语句，先清空数据
+        for (var i = 0, l = dataArr.length; i < l; i++) {
+            table.oApi._fnAddData(oSettings, dataArr[i]); //这里添加一行数据
+        }
+        oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+        table.fnDraw();//绘制表格
+    }
+
+    /**
+     * 设置table和图标的数据
+     */
+    function setTableAndChartData(select_time) {
+        let time_array = JSON.parse(window.sessionStorage.getItem("TIME_ARRAY"));
+        let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
         $.each(json_data, function (i, field) {
-            if (typeof(field) === "object" && field.time === last_time) {
-                initDataBaseTable(field.order,creatTimeHtml(time_array));
+            if (typeof(field) === "object" && field.time === select_time) {
+                updateDetailTableData(field.service);
                 $(".overlay").remove();
-                $.each(field.order, function (k1, v1) {
-                    let service_model = {number: "", name: "", order: 0};
-                    service_model.name = v1.name;
-                    service_model.number = v1.number;
-                    service_model.order = 1;
-                    let model = service_array.find(function (currentValue, index, arr) {
-                        return currentValue.number === v1.number;
-                    });
-                    if (model === undefined) {
-                        service_array.push(service_model);
-                    } else {
-                        model.order = model.order + 1;
-                    }
-                });
+                updateServiceChartData(select_time,field.service);
             } else {
                 console.log(field.time);
             }
         });
-        console.log(service_array);
-        let x_data = [];
+
+    }
+    /**
+     *更新图表
+     */
+    function updateServiceChartData(select_time,service_data) {
+        let service_array = [];
+        $("#chart_title").text(new Date(Number(select_time) * 1000).format("yyyy-MM-dd EEE"));
+        $.each(service_data, function (k1, v1) {
+            let service_model = {number: "", name: "", order: 0};
+            service_model.name = v1.name;
+            service_model.number = v1.number;
+            service_model.order = 1;
+            let model = service_array.find(function (currentValue, index, arr) {
+                return currentValue.number === v1.number;
+            });
+            if (model === undefined) {
+                service_array.push(service_model);
+            } else {
+                model.order = model.order + 1;
+            }
+        });
+         let x_data = [];
         let y_data = [];
         for (let i = 0; i < service_array.length; i++) {
             x_data[i] = service_array[i].name;
@@ -386,21 +415,47 @@ desired effect
         console.log(y_data);
         setChart(myChart, x_data, y_data);
     }
-    function creatTimeHtml(time_array) {
+    /**
+     * 创建下拉菜单
+     * @param select_time
+     * @param time_array
+     * */
+    function creatTimeHtml(select_time, time_array) {
         let html = '<div class="dropdown" style="float: left;">' +
             '<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
-            new Date(Number(time_array[0])*1000).format("yyyy-MM-dd EEE") +
+            new Date(Number(select_time) * 1000).format("yyyy-MM-dd EEE") +
             '<span class="caret"></span>' +
             '</button>' +
             '<ul class="dropdown-menu" aria-labelledby="dropdownMenu">';
         for (let i = 0; i < time_array.length; i++) {
-            html = html + '<li><a class="date" id='+time_array[i]+' href="#">' + new Date(Number(time_array[i])*1000).format("yyyy-MM-dd EEE") + '</a></li>';
+            html = html + '<li><a class="date" id=' + time_array[i] + ' href="#" onclick="menuClick(this)">' + new Date(Number(time_array[i]) * 1000).format("yyyy-MM-dd EEE") + '</a></li>';
         }
         html = html + '</ul>';
+        $("#dropdownMenu").data("Time", select_time);
         return html;
 
     }
-
+    /*
+    *
+    * 下拉菜单点击
+    * */
+    function menuClick(click) {
+        let time = $(click).attr("id");
+        let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
+        $.each(json_data, function (i, field) {
+            if (field.time === time) {
+                updateDetailTableData(field.service);
+                updateServiceChartData(time,field.service);
+                let time_txt =new Date(Number(time) * 1000).format("yyyy-MM-dd EEE")+'<span class="caret"></span>';
+                $("#dropdownMenu").html(time_txt)
+            }
+        });
+    }
+    /**
+     * 初始化table
+     * @param data
+     * @param time_html
+     */
     function initDataBaseTable(data, time_html) {
         $("#table_service").DataTable({
             "dom": '<"time"><"print">frtip',
@@ -430,20 +485,24 @@ desired effect
         $("div.print").html('<div style="width: 50px ;float: right; margin-left: 12px"><button type="button" class="btn btn-block btn-primary btn-sm" id="btn_print" onclick="print_data()">打印</button></div>');
     }
 
+    /**
+     * 打印json数据到CSV
+     */
     function print_data() {
-        let time = $("a.date").attr("id");
-        let content="";
+        let time = $("#dropdownMenu").data("Time");
+        let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
+        let content = "";
         $.each(json_data, function (i, field) {
-            if(field.time === time) {
-                $.each(field.order,function (i, data) {
-                    content =content+ data.number + "," + data.name + "," + data.table_number + "," + data.order + "," + data.time + "\n";
+            if (field.time === time) {
+                $.each(field.order, function (i, data) {
+                    content = content + data.number + "," + data.name + "," + data.table_number + "," + data.order + "," + data.time + "\n";
                     console.debug(content);
                 })
             }
         });
         //Excel打开后中文乱码添加如下字符串解决
-        var exportContent = "\uFEFF";
-        var blob = new Blob([exportContent+"员工编号,姓名,服务餐桌,服务类型,服务时长(min)\n"+content],{type: "text/plain;charset=utf-8"});
+        let exportContent = "\uFEFF";
+        let blob = new Blob([exportContent + "员工编号,姓名,服务餐桌,服务类型,服务时长(min)\n" + content], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "hello world.csv");
 //        $("#table_service").table2excel({
 //            exclude: "",
@@ -451,6 +510,12 @@ desired effect
 //            filename: "SomeFile" //do not include extension
 //        });
     }
+    /**
+     * 设置图表数据
+     * @param myChart
+     * @param x_data
+     * @param y_data
+     */
     function setChart(myChart, x_data, y_data) {
         // 指定图表的配置项和数据
         let option = {
@@ -471,10 +536,15 @@ desired effect
                 data: y_data
             }]
         };
+        myChart.hideLoading();
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
     }
-    function initChart(myChart) {
+
+    /**
+     * 初始化图表数据
+     */
+    function initChart() {
 
         // 指定图表的配置项和数据
         let option = {
@@ -493,7 +563,8 @@ desired effect
                 name: '销量',
                 type: 'bar',
                 data: []
-            }]
+            }],
+
         };
 
         // 使用刚指定的配置项和数据显示图表。
@@ -501,9 +572,5 @@ desired effect
     }
 
 </script>
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-     Both of these plugins are recommended to enhance the
-     user experience. Slimscroll is required when using the
-     fixed layout. -->
 </body>
 </html>
