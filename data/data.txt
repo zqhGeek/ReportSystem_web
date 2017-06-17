@@ -1,125 +1,152 @@
- [
-        {
-            "time": "1497406839",
-            "service": [
-                {
-                    "number": "1",
-                    "name": "张环山",
-                    "table_number": "12号",
-                    "order": "点菜",
-                    "time": "4"
-                },
-                {
-                    "number": "2",
-                    "name": "王百万",
-                    "table_number": "14号",
-                    "order": "倒水",
-                    "time": "10"
-                },
-                {
-                    "number": "3",
-                    "name": "赵启平",
-                    "table_number": "2号",
-                    "order": "加汤",
-                    "time": "20"
-                },
-                {
-                    "number": "2",
-                    "name": "王百万",
-                    "table_number": "14号",
-                    "order": "倒水",
-                    "time": "10"
-                },
-                {
-                    "number": "2",
-                    "name": "王百万",
-                    "table_number": "14号",
-                    "order": "倒水",
-                    "time": "10"
-                },
-                {
-                    "number": "2",
-                    "name": "王百万",
-                    "table_number": "14号",
-                    "order": "倒水",
-                    "time": "10"
-                },
-                {
-                    "number": "2",
-                    "name": "王百万",
-                    "table_number": "14号",
-                    "order": "倒水",
-                    "time": "10"
-                },
-                {
-                    "number": "2",
-                    "name": "王百万",
-                    "table_number": "14号",
-                    "order": "倒水",
-                    "time": "10"
-                }
-            ]
-        },
-
-        {
-                    "time": "1497510415",
-                    "service": [
-                        {
-                            "number": "1",
-                            "name": "张环山",
-                            "table_number": "12号",
-                            "order": "点菜",
-                            "time": "11"
-                        },
-                        {
-                            "number": "2",
-                            "name": "王百万",
-                            "table_number": "14号",
-                            "order": "倒水",
-                            "time": "22"
-                        },
-                        {
-                            "number": "3",
-                            "name": "赵启平",
-                            "table_number": "2号",
-                            "order": "加汤",
-                            "time": "33"
-                        },
-                        {
-                            "number": "2",
-                            "name": "王百万",
-                            "table_number": "14号",
-                            "order": "倒水",
-                            "time": "44"
-                        },
-                        {
-                            "number": "2",
-                            "name": "王百万",
-                            "table_number": "14号",
-                            "order": "倒水",
-                            "time": "55"
-                        },
-                        {
-                            "number": "2",
-                            "name": "王百万",
-                            "table_number": "14号",
-                            "order": "倒水",
-                            "time": "66"
-                        },
-                        {
-                            "number": "2",
-                            "name": "王百万",
-                            "table_number": "14号",
-                            "order": "倒水",
-                            "time": "77"
-                        },
-                        {
-                            "number": "2",
-                            "name": "王百万",
-                            "table_number": "14号",
-                            "order": "倒水",
-                            "time": "88"
-                        }
-                    ]
-                }
-    ]
+getJson([
+    {
+        "time": "1497406839",
+        "service": [
+            {
+                "number": "1",
+                "name": "张环山",
+                "table_number": "12号",
+                "order": "点菜",
+                "time": "4"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "20"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "倒水",
+                "time": "20"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "倒水",
+                "time": "20"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "20"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "20"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10"
+            }
+        ]
+    },
+    {
+        "time": "1497510415",
+        "service": [
+            {
+                "number": "1",
+                "name": "张环山",
+                "table_number": "12号",
+                "order": "点菜",
+                "time": "11"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "22"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "33"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "44"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "55"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "66"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "77"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "88"
+            }
+        ]
+    }
+])

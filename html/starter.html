@@ -8,6 +8,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8">
     <title>AdminLTE 2 | Starter</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -330,28 +332,31 @@ desired effect
     //    let time_array = [];
     //    let json_data;
     let myChart;
-    $(function () {
+    function getJson(json) {
         let time_array = [];
         let json_data;
+        json_data = json;
+        $.each(json, function (i, field) {
+            time_array.push(field.time);
+        });
+        time_array.sort(function (a, b) {
+            return Number(b) - Number(a);
+        });
+        window.sessionStorage.setItem("JSON_DATA", JSON.stringify(json_data));
+        window.sessionStorage.setItem("TIME_ARRAY", JSON.stringify(time_array));
+        console.log(time_array);
+    }
+    $(function () {
+        let time_array = JSON.parse(window.sessionStorage.getItem("TIME_ARRAY"));
+        let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
 //        initDataBaseTable();
         // 基于准备好的dom，初始化echarts实例
         myChart = echarts.init(document.getElementById('chart_main'));
         initChart();
         myChart.showLoading();
-        $.getJSON("../data/data.txt", function (json) {
-            json_data = json;
-            $.each(json, function (i, field) {
-                time_array.push(field.time);
-            });
-            time_array.sort(function (a, b) {
-                return Number(b) - Number(a);
-            });
-            window.sessionStorage.setItem("JSON_DATA", JSON.stringify(json_data));
-            window.sessionStorage.setItem("TIME_ARRAY", JSON.stringify(time_array));
-            console.log(time_array);
-            initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
-            setTableAndChartData(time_array[0]);
-        });
+        console.log(time_array);
+        initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
+        setTableAndChartData(time_array[0]);
     });
 
     /**
@@ -431,7 +436,7 @@ desired effect
             html = html + '<li><a class="date" id=' + time_array[i] + ' href="#" onclick="menuClick(this)">' + new Date(Number(time_array[i]) * 1000).format("yyyy-MM-dd EEE") + '</a></li>';
         }
         html = html + '</ul>';
-        $("#dropdownMenu").data("Time", select_time);
+        $("#table_service").data("Time", select_time);
         return html;
 
     }
@@ -489,12 +494,12 @@ desired effect
      * 打印json数据到CSV
      */
     function print_data() {
-        let time = $("#dropdownMenu").data("Time");
+        let time = $("#table_service").data("Time");
         let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
         let content = "";
         $.each(json_data, function (i, field) {
             if (field.time === time) {
-                $.each(field.order, function (i, data) {
+                $.each(field.service, function (i, data) {
                     content = content + data.number + "," + data.name + "," + data.table_number + "," + data.order + "," + data.time + "\n";
                     console.debug(content);
                 })
@@ -572,5 +577,6 @@ desired effect
     }
 
 </script>
+<script src="../data/data.txt"></script>
 </body>
 </html>
