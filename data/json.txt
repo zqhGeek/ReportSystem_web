@@ -1,0 +1,192 @@
+[
+    {
+        "time": "1497406839",
+        "service": [
+            {
+                "number": "1",
+                "name": "张环山",
+                "table_number": "12号",
+                "order": "点菜",
+                "time": "4",
+                "start_time": "1497834000",
+                "end_time": "1497834600"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10",
+                "start_time": "1497834000",
+                "end_time": "1497835200"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "20",
+                "start_time": "1497834000",
+                "end_time": "1497835200"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "倒水",
+                "time": "20",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "倒水",
+                "time": "20",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "20",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "20",
+                "start_time": "1497834000",
+                "end_time": "1497834780"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10",
+                "start_time": "1497834000",
+                "end_time": "1497834780"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10",
+                "start_time": "1497834000",
+                "end_time": "1497834780"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "10",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            }
+        ]
+    },
+    {
+        "time": "1497510415",
+        "service": [
+            {
+                "number": "1",
+                "name": "张环山",
+                "table_number": "12号",
+                "order": "点菜",
+                "time": "11",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "22",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "3",
+                "name": "赵启平",
+                "table_number": "2号",
+                "order": "加汤",
+                "time": "33",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "44",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "55",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "66",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "77",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            },
+            {
+                "number": "2",
+                "name": "王百万",
+                "table_number": "14号",
+                "order": "倒水",
+                "time": "88",
+                "start_time": "1497834000",
+                "end_time": "1497834900"
+            }
+        ]
+    }
+]

@@ -18,26 +18,47 @@ function getJson(json) {
     console.log(time_array);
 }
 $(function () {
-    let time_array = JSON.parse(window.sessionStorage.getItem("TIME_ARRAY"));
-    let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
-//        initDataBaseTable();
+    // let time_array = JSON.parse(window.sessionStorage.getItem("TIME_ARRAY"));
+    // let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
+    moment.locale('zh-cn');
+    let time_array = [];
+    let json_data;
     // 基于准备好的dom，初始化echarts实例
     myChart = echarts.init(document.getElementById('chart_main'));
     initChart();
     myChart.showLoading();
-    console.log(time_array);
-    initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
-    setTableAndChartData(time_array[0]);
+    $.getJSON("data/json.txt", function (json) {
+        json_data = json;
+        $.each(json, function (i, field) {
+            time_array.push(field.time);
+        });
+        time_array.sort(function (a, b) {
+            return Number(b) - Number(a);
+        });
+        window.sessionStorage.setItem("JSON_DATA", JSON.stringify(json_data));
+        window.sessionStorage.setItem("TIME_ARRAY", JSON.stringify(time_array));
+        console.log(time_array);
+        initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
+        setTableAndChartData(time_array[0]);
+    });
+    // console.log(time_array);
+    // initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
+    // setTableAndChartData(time_array[0]);
 });
 
 /**
  * 更新table数据
  */
 function updateDetailTableData(dataArr) { //dataArr是表格数据数组，和初始化配置需一样的结构
-    var table = $('#table_service').dataTable();
-    var oSettings = table.fnSettings(); //这里获取表格的配置
+    let table = $('#table_service').dataTable();
+    let oSettings = table.fnSettings(); //这里获取表格的配置
     table.fnClearTable(this); //动态刷新关键部分语句，先清空数据
-    for (var i = 0, l = dataArr.length; i < l; i++) {
+    $.each(dataArr,function (i, model) {
+        model.start_time = moment(Number(model.start_time) * 1000).format("MM月DD日 HH:mm");
+        model.end_time = moment(Number(model.end_time) * 1000).format("MM月DD日 HH:mm");
+    });
+    let i = 0, l = dataArr.length;
+    for (; i < l; i++) {
         table.oApi._fnAddData(oSettings, dataArr[i]); //这里添加一行数据
     }
     oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
@@ -48,7 +69,6 @@ function updateDetailTableData(dataArr) { //dataArr是表格数据数组，和�
  * 设置table和图标的数据
  */
 function setTableAndChartData(select_time) {
-    let time_array = JSON.parse(window.sessionStorage.getItem("TIME_ARRAY"));
     let json_data = JSON.parse(window.sessionStorage.getItem("JSON_DATA"));
     $.each(json_data, function (i, field) {
         if (typeof(field) === "object" && field.time === select_time) {
@@ -66,7 +86,7 @@ function setTableAndChartData(select_time) {
  */
 function updateServiceChartData(select_time,service_data) {
     let service_array = [];
-    $("#chart_title").text(new Date(Number(select_time) * 1000).format("yyyy-MM-dd EEE"));
+    $("#chart_title").text(moment(Number(select_time) * 1000).format("YYYY-MM-DD dddd"));
     $.each(service_data, function (k1, v1) {
         let service_model = {number: "", name: "", order: 0};
         service_model.name = v1.name;
@@ -98,19 +118,15 @@ function updateServiceChartData(select_time,service_data) {
  * */
 function creatTimeHtml(select_time, time_array) {
     let html = '<div class="dropdown" style="float: left;">' +
-        '<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' +
-        new Date(Number(select_time) * 1000).format("yyyy-MM-dd EEE") +
+        '<button class="btn btn-default dropdown-toggle" type="button" id="time_select_btn" >' +
+        moment(Number(select_time) * 1000).format("YY-MM-DD dddd") +
         '<span class="caret"></span>' +
-        '</button>' +
-        '<ul class="dropdown-menu" aria-labelledby="dropdownMenu">';
-    for (let i = 0; i < time_array.length; i++) {
-        html = html + '<li><a class="date" id=' + time_array[i] + ' href="#" onclick="menuClick(this)">' + new Date(Number(time_array[i]) * 1000).format("yyyy-MM-dd EEE") + '</a></li>';
-    }
-    html = html + '</ul>';
+        '</button>';
     $("#table_service").data("Time", select_time);
     return html;
 
 }
+
 /*
  *
  * 下拉菜单点击
@@ -122,11 +138,12 @@ function menuClick(click) {
         if (field.time === time) {
             updateDetailTableData(field.service);
             updateServiceChartData(time,field.service);
-            let time_txt =new Date(Number(time) * 1000).format("yyyy-MM-dd EEE")+'<span class="caret"></span>';
+            let time_txt =moment(Number(time) * 1000).format("YY-MM-DD dddd")+'<span class="caret"></span>';
             $("#dropdownMenu").html(time_txt)
         }
     });
 }
+
 /**
  * 初始化table
  * @param data
@@ -150,7 +167,9 @@ function initDataBaseTable(data, time_html) {
             {"data": "name"},
             {"data": "table_number"},
             {"data": "order"},
-            {"data": "time"}
+            {"data": "time"},
+            {"data":"start_time"},
+            {"data":"end_time"}
         ],
         "language": {
             "zeroRecords": "暂无相关信息",
