@@ -40,6 +40,7 @@ $(function () {
         console.log(time_array);
         initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
         setTableAndChartData(time_array[0]);
+        datePicker();
     });
     // console.log(time_array);
     // initDataBaseTable([], creatTimeHtml(time_array[0], time_array));
@@ -118,15 +119,29 @@ function updateServiceChartData(select_time,service_data) {
  * */
 function creatTimeHtml(select_time, time_array) {
     let html = '<div class="dropdown" style="float: left;">' +
-        '<button class="btn btn-default dropdown-toggle" type="button" id="time_select_btn" >' +
+        '<div class="btn btn-default dropdown-toggle" type="button" id="time_select_btn" >' +
         moment(Number(select_time) * 1000).format("YY-MM-DD dddd") +
         '<span class="caret"></span>' +
-        '</button>';
+        '</div>';
     $("#table_service").data("Time", select_time);
     return html;
 
 }
+function datePicker() {
+    $("#time_select_btn").daterangepicker({
+        startDate:moment($("#time_select_btn").text(),"YY-MM-DD dddd"),
+        endDate:moment($("#time_select_btn").text(),"YY-MM-DD dddd"),
 
+    },function (start, end, label) {
+
+        let time_txt =moment(start).format("YY-MM-DD dddd")+'--'+moment(end).format("YY-MM-DD dddd")+'<span class="caret"></span>';
+        if(moment(start).isSame(end,'day')) {
+            time_txt =moment(start).format("YY-MM-DD dddd")+'<span class="caret"></span>';
+        }
+        $("#time_select_btn").html(time_txt);
+        console.log(start+":"+end+":"+label);
+    });
+}
 /*
  *
  * 下拉菜单点击
